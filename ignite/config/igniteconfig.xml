@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="org.apache.ignite.configuration.IgniteConfiguration">
+
+
+<!-- ADD the schema here. -->
+<property name="sqlSchemas">
+        <list>
+            <value>TEST1</value>
+            <value>TEST2</value>
+            <value>TEST3</value>
+        </list>
+</property>
+
+
+
+<!-- Thin client connection configuration. -->
+    <property name="clientConnectorConfiguration">
+        <bean class="org.apache.ignite.configuration.ClientConnectorConfiguration">
+            <property name="host" value="IP.IP.IP.IP.11"/>
+            <property name="port" value="10800"/>
+            <!-- below is required only when installin 2 nodes on single server. -->
+            <property name="portRange" value="30"/>  
+        </bean>
+    </property>
+
+<!-- below property is used fro persistence -->
+<!-- <property name="workDirectory" value="/oracle/ignite/ign02"/> -->
+
+
+
+<property name="communicationSpi">
+    <bean class="org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi">
+      <property name="messageQueueLimit" value="51200"/>
+    </bean>
+  </property>
+
+
+ <property name="gridLogger">
+    <bean class="org.apache.ignite.logger.log4j.Log4JLogger">
+            <constructor-arg type="java.lang.String" value="/home/ignite/config/ignite-log4j.xml"/>
+    </bean>
+  </property>
+
+<!--Node ID -->
+ <property name="ConsistentId" value="ign01"/>
+
+ <!-- Configure internal thread pool. set this also DataStreamerThreadPoolSize -->
+    <property name="publicThreadPoolSize" value="64"/>
+
+    <!-- Configure system thread pool. -->
+    <property name="systemThreadPoolSize" value="32"/>
+
+   <property name="QueryThreadPoolSize" value="32"/>
+
+<property name="ServiceThreadPoolSize" value="16"/>
+
+<property name="DataStreamerThreadPoolSize" value="32"/>
+
+<!--
+<property name="rebalanceThreadPoolSize" value="4"/>
+     Set batch size.
+      <property name="rebalanceBatchSize" value="#{2 * 1024 * 1024}"/>
+       Set throttle interval.
+      <property name="rebalanceThrottle" value="100"/> -->
+
+
+<property name="discoverySpi">
+    <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
+           <!-- Initial local port to listen to.
+            <property name="localPort" value="48600"/> -->
+
+            <!-- Changing local port range. This is an optional action.
+            <property name="localPortRange" value="10"/> -->
+
+      <property name="ipFinder">
+        <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">
+          <property name="addresses">
+            <list>
+
+              <value>IP.IP.IP.IP.11</value>
+              <value>IP.IP.IP.IP.12</value>
+              <value>IP.IP.IP.IP.13</value>
+
+            </list>
+          </property>
+        </bean>
+      </property>
+    </bean>
+  </property>
+
+
+
+     <property name="dataStorageConfiguration">
+        <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
+
+
+
+
+
+         <!-- Set concurrency level -->
+            <property name="concurrencyLevel" value="4"/>
+
+            <property name="defaultDataRegionConfiguration">
+                <bean class="org.apache.ignite.configuration.DataRegionConfiguration">
+                   <property name="name" value="Default_Region"/>
+
+                     <!-- 1 GB initial size. -->
+                   <property name="initialSize" value="#{1L * 1024 * 1024 * 1024}"/>
+
+                    <!-- Setting the size of the default region to 4GB. -->
+                  <property name="maxSize" value="#{4L * 1024 * 1024 * 1024}"/>
+
+
+
+
+                </bean>
+            </property>
+
+        </bean>
+    </property>
+
+<property name="cacheConfiguration">
+   <list>
+       <bean id="cache-template-bean" abstract="true" class="org.apache.ignite.configuration.CacheConfiguration">
+        <!-- when you create a template via XML configuration, you must add an asterisk to the name of the template -->
+          <property name="name" value="dlkCache*"/>
+          <property name="dataRegionName" value="Default_Region"/>
+          <property name="writeSynchronizationMode" value="FULL_ASYNC"/>
+           <property name="backups" value="1"/>
+           <property name="atomicityMode" value="ATOMIC" />
+            <property name="cacheMode" value="PARTITIONED"/>
+            <property name="rebalanceMode" value="ASYNC"/>
+            <property name="partitionLossPolicy" value="READ_ONLY_SAFE"/>
+           <property name="rebalanceThreadPoolSize" value="8"/>
+            <property name="rebalanceBatchSize" value="#{2 * 1024 * 1024}"/>
+           <property name="queryParallelism" value="32"/>
+            <!-- enable disk page compression for this cache
+           <property name="diskPageCompression" value="SNAPPY"/> -->
+
+</bean>
+
+  <bean id="cache-template-bean" abstract="true" class="org.apache.ignite.configuration.CacheConfiguration">
+
+          <property name="name" value="dlkCache1*"/>
+          <property name="dataRegionName" value="Default_Region"/>
+          <property name="writeSynchronizationMode" value="FULL_ASYNC"/>
+            <property name="atomicityMode" value="ATOMIC" />
+            <property name="cacheMode" value="REPLICATED"/>
+            <property name="rebalanceMode" value="ASYNC"/>
+            <property name="partitionLossPolicy" value="READ_ONLY_SAFE"/>
+           <property name="rebalanceThreadPoolSize" value="8"/>
+            <property name="rebalanceBatchSize" value="#{2 * 1024 * 1024}"/>
+                    <!-- <property name="queryParallelism" value="32"/> -->
+
+
+       </bean>
+
+
+   </list>
+</property>
+
+<property name="ConnectorConfiguration.jettyPath" value="/home/ignite/config/rest.xml"/>
+
+    </bean>
+</beans>
