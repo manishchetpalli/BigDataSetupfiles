@@ -1,0 +1,56 @@
+{
+  "brokerCapacities": [
+    {
+      "brokerId": "-1",
+      "capacity": {
+        "DISK": "950000",
+        "CPU": "1600",
+        "NW_IN": "1228800",
+        "NW_OUT": "1228800"
+      },
+      "doc": "Default capacity for all brokers."
+    },
+    {
+      "brokerId": "0",
+      "capacity": {
+        "DISK": {
+          "/data1/kafka-data/kafka-logs": "787000"
+        },
+        "CPU": {
+          "num.cores": "14"
+        },
+        "NW_IN": "1228800",
+        "NW_OUT": "1228800"
+      },
+      "doc": "Capacity for Broker 0."
+    },
+    {
+      "brokerId": "1",
+      "capacity": {
+        "DISK": {
+          "/data1/kafka-data/kafka-logs": "787000"
+        },
+        "CPU": {
+          "num.cores": "14"
+        },
+        "NW_IN": "1228800",
+        "NW_OUT": "1228800"
+      },
+      "doc": "Capacity for Broker 1."
+    },
+    {
+      "brokerId": "2",
+      "capacity": {
+        "DISK": {
+          "/data1/kafka-data/kafka-logs": "787000"
+        },
+        "CPU": {
+          "num.cores": "14"
+        },
+        "NW_IN": "1228800",
+        "NW_OUT": "1228800"
+      },
+      "doc": "Capacity for Broker 2."
+    }
+  ]
+}

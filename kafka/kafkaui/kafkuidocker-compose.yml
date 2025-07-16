@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 18081:8080
+    environment:
+
+      KAFKA_CLUSTERS_0_NAME: RRADEVKAFKA
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: sjdcrradlkkfk1.ril.com:6667,sjdcrradlkkfk2.ril.com:6667,sjdcrradlkkfk3.ril.com:6667
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: SASL_SSL
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: SCRAM-SHA-512
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_JA AS_CONFIG: 'org.apache.kafka.common.security.scram.ScramLoginModule required username="admin" password="n1e6mkym1z";'
+      KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_LOCATION: /truststore.jks  
+      KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_PASSWORD: 7ecETGlHjzs
+
+      AUTH_TYPE: "LOGIN_FORM"
+      SPRING_SECURITY_USER_NAME: rra_admin_dlk
+      SPRING_SECURITY_USER_PASSWORD: rra_admin_dlk#2024
+
+    extra_hosts:
+      - "sjdcrradlkkfk1.ril.com:10.21.68.203"
+      - "sjdcrradlkkfk2.ril.com:10.21.68.204"
+      - "sjdcrradlkkfk3.ril.com:10.21.68.205"
+    volumes:
+      - /root/kafka_ui/truststore.jks:/truststore.jks  
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
