@@ -1,0 +1,59 @@
+{
+    "tableName": "T_COUNTER_V1",
+    "schemaName": "default",
+    "topicName": "T_COUNTER_V1",
+
+    "key": {
+        "dataFormat": "raw",
+        "fields": [
+            {
+                "name": "ORDERDATE1",
+                "type": "VARCHAR",
+                "hidden": "false"
+            }
+        ]
+    },
+
+
+
+    "message": {
+        "dataFormat": "json",
+        "fields": [
+
+
+
+        {
+            "name": "TOT_ORDER_AMT_SUM1",
+            "mapping": "TOT_ORDER_AMT_SUM",
+            "type": "BIGINT"
+        },
+        {
+            "name": "TOT_ORDER_AMT_AVG1",
+            "mapping": "TOT_ORDER_AMT_AVG",
+            "type": "BIGINT"
+        },
+        {
+            "name": "TOTALORDERS1",
+            "mapping": "TOTALORDERS",
+            "type": "BIGINT"
+        },
+        {
+            "name": "TOTALORDERS_I",
+            "mapping": "TOTALORDERS_I",
+            "type": "BIGINT"
+        },
+        {
+            "name": "TOTALORDERS_D",
+            "mapping": "TOTALORDERS_D",
+            "type": "BIGINT"
+        },
+        {
+            "name": "CURRENT_DATE1",
+            "mapping": "CURRENT_DATE",
+            "type": "VARCHAR"
+        }
+
+
+        ]
+    }
+}

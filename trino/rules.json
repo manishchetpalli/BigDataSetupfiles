@@ -1,0 +1,59 @@
+{
+  "catalogs": [
+    {
+      "group": "admin",
+      "catalog": ".*",
+      "allow": "all"
+    },
+    {
+      "group": "developer",
+      "catalog": "(hive|iceberg)",
+      "allow": "read-only"
+    },
+    {
+      "group": "ui",
+      "catalog": "(hive|system)",
+      "allow": "read-only"
+    },
+    {
+      "catalog": "system",
+      "allow": "none"
+    },
+    {
+      "group": "ba",
+      "catalog": "(hive|system)",
+      "allow": "read-only"
+    }
+  ],
+  "tables": [
+    {
+      "group": "developer",
+      "catalog": "hive",
+      "schema": "dlops|raw|trusted|rr_analyst|cust6d|fnloms|sbox",
+      "table": ".*",
+      "privileges": ["SELECT"]
+    },
+    {
+      "group": "admin",
+      "catalog": ".*",
+      "schema": ".*",
+      "table": ".*",
+      "privileges": ["SELECT"]
+    },
+    {
+      "group": "ui",
+      "catalog": "(hive|system)",
+      "schema": ".*",
+      "table": ".*",
+      "privileges": ["SELECT"]
+    },
+    {
+      "group": "ba",
+      "catalog": "hive",
+      "schema": "dlops|raw|trusted|rr_analyst|cust6d|fnloms|sbox",
+      "table": ".*",
+      "privileges": ["SELECT"]
+    }
+  ]
+}
+

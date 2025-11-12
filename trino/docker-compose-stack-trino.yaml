@@ -1,0 +1,231 @@
+version: '3.7'
+
+x-trino-volumes-coord: &trino-volumes-coord
+  - /trino-418/catalog:/usr/lib/trino-server-418/etc/catalog
+  - /trino-418/mappingjson:/usr/lib/trino-server-418/etc/kafka
+  - /trino-418/misc:/etc/trino
+  - /trino-418/access-control.properties:/usr/lib/trino-server-418/etc/access-control.properties
+  - /trino-418/rules.json:/usr/lib/trino-server-418/etc/rules.json
+  - /SPARKLOCK/zulujdk17:/opt/java
+  - /trino-418/conf:/etc/hadoop/conf
+  - /trino-418/trino:/usr/lib/trino-server-418/bin/trino
+  - /trino-418/group-provider.properties:/usr/lib/trino-server-418/etc/group-provider.properties
+  - /trino-418/group.txt:/usr/lib/trino-server-418/etc/group.txt
+  - /trino-418/certs:/usr/lib/trino-server-418/etc/certs
+  - /trino-418/password-authenticator.properties:/usr/lib/trino-server-418/etc/password-authenticator.properties
+  - /trino-418/http-event-listener.properties:/etc/trino/http-event-listener.properties
+#  - /trino-418/entrypoint.sh:/opt/entrypoint.sh
+
+x-trino-volumes-worker: &trino-volumes-worker
+  - /trino-418/catalog:/usr/lib/trino-server-418/etc/catalog
+  - /trino-418/mappingjson:/usr/lib/trino-server-418/etc/kafka
+  - /trino-418/misc:/etc/trino
+  - /SPARKLOCK/zulujdk17:/opt/java
+  - /trino-418/access-control.properties:/usr/lib/trino-server-418/etc/access-control.properties
+  - /trino-418/conf:/etc/hadoop/conf
+  - /trino-418/rules.json:/usr/lib/trino-server-418/etc/rules.json
+  - /trino-418/group-provider.properties:/usr/lib/trino-server-418/etc/group-provider.properties
+  - /trino-418/group.txt:/usr/lib/trino-server-418/etc/group.txt
+  - /trino-418/certs:/usr/lib/trino-server-418/etc/certs
+  - /trino-418/trino:/usr/lib/trino-server-418/bin/trino
+  - /trino-418/password-authenticator.properties:/usr/lib/trino-server-418/etc/password-authenticator.properties
+#  - /trino-418/entrypoint.sh:/opt/entrypoint.sh
+
+
+x-trino-volumes-yana: &trino-volumes-yana
+   - /trino-418/yanagishima.properties:/root/app/conf/yanagishima.properties
+#  - /trino-418/misc/cacerts:/opt/cacerts
+
+
+services:
+  trinocoordinator:
+    hostname: trinocoordinator
+    image: trino-prod-418-new:v2
+    environment:
+      - key=value127
+      - HTTP_SERVER_PORT=8084
+      - TRINO_MAX_MEMORY=168
+      - TRINO_MAX_MEMORY_PER_NODE=24
+      - TRINO_JVM_HEAP_SIZE=80
+      - TRINO_MAX_TOTAL_MEMORY=320
+      - HOSTNAME=trinocoordinator
+      - TZ=Asia/Kolkata
+    ports:
+      - 18084:8084
+    volumes: *trino-volumes-coord
+    deploy:
+      placement:
+        constraints: [node.labels.type == master02]
+
+  trinoworker01:
+    hostname: trinoworker01
+    depends_on:
+      - trinocoordinator
+    image: trino-prod-418-new:v2
+    environment:
+      - key=value127
+      - TRINO_MAX_MEMORY=512
+      - TRINO_MAX_MEMORY_PER_NODE=60
+      - TRINO_MAX_TOTAL_MEMORY=1024
+      - HTTP_SERVER_PORT=8084
+      - COORDINATOR=trinocoordinator
+      - HOSTNAME=trinoworker01
+      - TRINO_JVM_HEAP_SIZE=200
+      - TZ=Asia/Kolkata
+    volumes: *trino-volumes-worker
+    deploy:
+      placement:
+        constraints: [node.labels.type == master01]
+
+
+  trinoworker02:
+    hostname: trinoworker02
+    depends_on:
+      - trinocoordinator
+    image: trino-prod-418-new:v2
+    environment:
+      - key=value122
+      - TRINO_MAX_MEMORY=512
+      - TRINO_MAX_MEMORY_PER_NODE=60
+      - TRINO_MAX_TOTAL_MEMORY=1024
+      - HTTP_SERVER_PORT=8084
+      - COORDINATOR=trinocoordinator
+      - HOSTNAME=trinoworker02
+      - TRINO_JVM_HEAP_SIZE=200
+      - TZ=Asia/Kolkata
+    volumes: *trino-volumes-worker
+    deploy:
+      placement:
+        constraints: [node.labels.type == master02]
+
+  trinoworker03:
+    hostname: trinoworker03
+    depends_on:
+      - trinocoordinator
+    image: trino-prod-418-new:v2
+    environment:
+      - key=value132
+      - TRINO_MAX_MEMORY=512
+      - TRINO_MAX_MEMORY_PER_NODE=60
+      - TRINO_MAX_TOTAL_MEMORY=1024
+      - HTTP_SERVER_PORT=8084
+      - COORDINATOR=trinocoordinator
+      - HOSTNAME=trinoworker03
+      - TRINO_JVM_HEAP_SIZE=200
+      - TZ=Asia/Kolkata
+    volumes: *trino-volumes-worker
+    deploy:
+      placement:
+        constraints: [node.labels.type == worker05]
+
+  trinoworker04:
+    hostname: trinoworker04
+    depends_on:
+      - trinocoordinator
+    image: trino-prod-418-new:v2
+    environment:
+      - key=value126
+      - TRINO_MAX_MEMORY=512
+      - TRINO_MAX_MEMORY_PER_NODE=60
+      - TRINO_MAX_TOTAL_MEMORY=1024
+      - HTTP_SERVER_PORT=8084
+      - COORDINATOR=trinocoordinator
+      - HOSTNAME=trinoworker04
+      - TRINO_JVM_HEAP_SIZE=200
+      - TZ=Asia/Kolkata
+    volumes: *trino-volumes-worker
+    deploy:
+      placement:
+        constraints: [node.labels.type == master03]
+
+  trinoworker05:
+    hostname: trinoworker05
+    depends_on:
+      - trinocoordinator
+    image: trino-prod-418-new:v2
+    environment:
+      - key=value125
+      - TRINO_MAX_MEMORY=512
+      - TRINO_MAX_MEMORY_PER_NODE=60
+      - TRINO_MAX_TOTAL_MEMORY=1024
+      - HTTP_SERVER_PORT=8084
+      - COORDINATOR=trinocoordinator
+      - HOSTNAME=trinoworker05
+      - TRINO_JVM_HEAP_SIZE=200
+      - TZ=Asia/Kolkata
+    volumes: *trino-volumes-worker
+    deploy:
+      placement:
+        constraints: [node.labels.type == worker04]
+
+#  trinoworker06:
+#    hostname: trinoworker06
+#    depends_on:
+#      - trinocoordinator
+#    image: trino-prod-418-new:v2
+#    environment:
+#      - key=value145
+#      - TRINO_MAX_MEMORY=512
+#      - TRINO_MAX_MEMORY_PER_NODE=60
+#      - TRINO_MAX_TOTAL_MEMORY=1024
+#      - HTTP_SERVER_PORT=8084
+#      - COORDINATOR=trinocoordinator
+#      - HOSTNAME=trinoworker06
+#      - TRINO_JVM_HEAP_SIZE=200
+#      - TZ=Asia/Kolkata
+#    volumes: *trino-volumes-worker
+#    deploy:
+#      placement:
+#        constraints: [node.labels.type == worker07]
+
+  trinoworker06:
+    hostname: trinoworker06
+    depends_on:
+      - trinocoordinator
+    image: trino-prod-418-new:v2
+    environment:
+      - key=value1
+      - TRINO_MAX_MEMORY=512
+      - TRINO_MAX_MEMORY_PER_NODE=60
+      - TRINO_MAX_TOTAL_MEMORY=1024
+      - HTTP_SERVER_PORT=8084
+      - COORDINATOR=trinocoordinator
+      - HOSTNAME=trinoworker06
+      - TRINO_JVM_HEAP_SIZE=200
+      - TZ=Asia/Kolkata
+    volumes: *trino-volumes-worker
+    deploy:
+      placement:
+        constraints: [node.labels.type == worker06]
+
+  trinoyana:
+    hostname: trinoyana
+    depends_on:
+      - trinocoordinator
+    image: rrayana:v22
+    environment:
+      - key=value13
+      - TZ=Asia/Kolkata
+#    ports:
+#      - 19093:8080
+    volumes: *trino-volumes-yana
+    deploy:
+      placement:
+        constraints: [node.labels.type == master02]
+
+  web_nginx_trino:
+    image: /nginx:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.labels.type == master02]
+    volumes:
+      - /trino-418/config_mounted/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /trino-418/nginx_user_config/.htpasswdadmin:/etc/nginx/.htpasswdadmin
+    ports:
+      - "9093:80"
+    environment:
+      - NGINX_HOST=prod01.trino.abc.com
+      - NGINX_PORT=80
